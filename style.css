@@ -1,0 +1,694 @@
+/* ==========================================================
+   PSYCHO – OPEN AIR CINEMA · "The Bates Chronicle"
+   Stylesheet til temaopgave 3 (Zealand, 1. semester)
+   Design: Figma-siden "KRIMINALARKIV 2026 — Desktop Tablet Mobil"
+
+   Indhold:
+   0. Skrifttyper (lokale filer)
+   1. Variabler
+   2. Reset og basis
+   3. Tilgængelighed
+   4. Layout
+   5. Avishoved (kicker, masthead, navigation)
+   6. Adgangskupon (call-to-action)
+   7. Dateline, overskrift og "Det vigtigste"
+   8. Artikler i spalter
+   9. Billeder og kortboks
+   10. "Fortroligt"-linjen øverst
+   11. Footer
+   12. Responsivt: tablet og desktop
+   13. Intro (bruserscenen)
+   14. Reduceret bevægelse
+   ========================================================== */
+
+/* ---------- 0. Skrifttyper ---------- */
+/* Lokale filer i assets/fonts (SIL OFL / Apache 2.0) – ingen eksterne kald. */
+@font-face {
+  font-family: "Abril Fatface";
+  src: url("../fonts/abril-fatface-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Old Standard TT";
+  src: url("../fonts/old-standard-tt-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Old Standard TT";
+  src: url("../fonts/old-standard-tt-latin-400-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Old Standard TT";
+  src: url("../fonts/old-standard-tt-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Special Elite";
+  src: url("../fonts/special-elite-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* ---------- 1. Variabler ---------- */
+:root {
+  /* Farver fra Figma: avispapir, sort tryksværte, gulnet papir og guld.
+     Ingen rød eller grøn, så intet afhænger af farver, protanoper ikke ser. */
+  --paper: #e9e1cf;        /* Avispapir (baggrund) */
+  --paper-dark: #e0cfaa;   /* Gulnet papir ("Det vigtigste") */
+  --button: #e3d3b3;       /* Knapper i menuen */
+  --ink: #1d1a16;          /* Tryksværte: tekst, streger, mørke flader */
+  --ink-soft: #3a352e;     /* Sekundær tekst */
+  --active: #47463e;       /* Aktiv side i menuen */
+  --gold: #b9a27c;         /* Kant på kuponen */
+  --cream: #efe4c9;        /* Tekst på mørk baggrund */
+  --shadow: #8f877a;       /* Kuponens skygge */
+
+  --font-display: "Abril Fatface", Georgia, serif;
+  --font-serif: "Old Standard TT", Georgia, "Times New Roman", serif;
+  --font-mono: "Special Elite", "Courier New", monospace;
+
+  --space-xs: 0.5rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2.5rem;
+
+  --container: 72rem;
+}
+
+/* ---------- 2. Reset og basis ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  /* Papirbaggrunden fra Figma. Billedet ligger i et fast lag bag siden
+     (body::before), så det ikke strækkes, når siden er lang. */
+  background-color: var(--paper);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--paper) url("../img/papir-baggrund.jpg") center / cover no-repeat;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.1;
+}
+
+p {
+  margin: 0 0 var(--space-s);
+}
+
+/* Links er altid understregede – de adskilles ikke kun med farve */
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---------- 3. Tilgængelighed ---------- */
+.skip-link {
+  position: absolute;
+  left: var(--space-s);
+  top: -4rem;
+  z-index: 100;
+  padding: var(--space-xs) var(--space-s);
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font-mono);
+}
+
+.skip-link:focus {
+  top: var(--space-s);
+}
+
+/* Tydelig fokusmarkering: tyk sort ring + lys kant, synlig på både
+   papir og mørke flader */
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--cream);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- 4. Layout ---------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--space-s);
+}
+
+.rule {
+  border: 0;
+  border-top: 3px solid var(--ink);
+  margin: var(--space-m) 0;
+}
+
+.rule--double {
+  height: 8px;
+  border-top: 3px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+}
+
+/* Mono-tekst i typewriter-stil (kicker, dateline, billedtekster) */
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* ---------- 5. Avishoved ---------- */
+.site-header {
+  padding-top: var(--space-s);
+}
+
+.kicker {
+  margin: 0;
+  padding-bottom: 0.35rem;
+  border-bottom: 3px solid var(--ink);
+}
+
+.masthead {
+  display: inline-block;
+  margin-top: var(--space-s);
+  text-decoration: none;
+}
+
+.masthead__title {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3.75rem, 16vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+}
+
+.masthead__sub {
+  display: block;
+  margin-top: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: clamp(0.95rem, 3vw, 1.15rem);
+  text-transform: uppercase;
+}
+
+/* Menu: mørk bjælke med lyse "knapper", som i Figma.
+   Mobil: knapperne står under hinanden. Fra tablet: på én række. */
+.main-nav {
+  margin-top: var(--space-s);
+  padding: var(--space-s);
+  background: var(--ink);
+}
+
+.main-nav ul {
+  display: grid;
+  gap: var(--space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.main-nav a {
+  display: block;
+  padding: 0.75rem var(--space-s);
+  background: var(--button);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.main-nav a:hover {
+  text-decoration: underline;
+  transform: translateY(-2px);
+}
+
+/* Aktiv side: mørk knap OG ◆-ikon – ikke kun en farveforskel */
+.main-nav a[aria-current="page"] {
+  background: var(--active);
+  color: var(--cream);
+}
+
+.main-nav a[aria-current="page"]::before {
+  content: "◆ ";
+}
+
+/* ---------- 6. Adgangskupon ---------- */
+/* Kuponen er sidens call-to-action. Animation: ved hover/fokus "løftes"
+   kuponen, og ved klik trykkes den ned i skyggen, som et stempel.
+   Det giver brugeren tydelig feedback på, at kuponen kan klikkes. */
+.coupon-wrap {
+  display: flex;
+  justify-content: center;
+  margin: var(--space-l) 0 var(--space-m);
+}
+
+.coupon {
+  display: block;
+  max-width: 100%;
+  padding: 0.9rem 1.5rem;
+  background: var(--ink);
+  color: var(--cream);
+  border: 4px solid var(--gold);
+  box-shadow: 8px 8px 0 var(--shadow);
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.coupon:hover,
+.coupon:focus-visible {
+  transform: translate(-2px, -2px);
+  box-shadow: 10px 10px 0 var(--shadow);
+}
+
+.coupon:active {
+  transform: translate(6px, 6px);
+  box-shadow: 2px 2px 0 var(--shadow);
+}
+
+.coupon__top,
+.coupon__bottom {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.coupon__main {
+  display: block;
+  margin: 0.25rem 0;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(1.1rem, 4.6vw, 1.75rem);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.coupon:hover .coupon__main {
+  text-decoration: underline;
+}
+
+.coupon--large {
+  width: 100%;
+  padding: var(--space-m);
+}
+
+.coupon--large .coupon__main {
+  font-size: clamp(1.6rem, 6vw, 2.6rem);
+}
+
+/* ---------- 7. Dateline, overskrift og "Det vigtigste" ---------- */
+.dateline {
+  margin: var(--space-m) 0 0;
+  padding-bottom: var(--space-s);
+  border-bottom: 3px solid var(--ink);
+}
+
+.headline {
+  padding: var(--space-m) 0 var(--space-s);
+  border-bottom: 3px solid var(--ink);
+}
+
+.headline h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 8vw, 3.9rem);
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.headline__sub {
+  margin: var(--space-xs) 0 0;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+/* "Det vigtigste / Læs først": nøgleinfo samlet ét sted (vigtigt for
+   persona Yrsa og for GEO, så AI let kan finde dato, sted og pris) */
+.essentials {
+  margin: var(--space-m) 0;
+  padding: var(--space-s);
+  background: var(--paper-dark);
+  border: 2px solid var(--ink);
+}
+
+.essentials h2 {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.essentials__date {
+  margin: 0.3rem 0 0;
+  font-weight: 700;
+  font-size: clamp(1.25rem, 4vw, 1.55rem);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.essentials__place {
+  margin: 0.2rem 0 0;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.essentials__meta {
+  margin: 0.3rem 0 0;
+}
+
+/* ---------- 8. Artikler i spalter ---------- */
+.columns {
+  display: grid;
+  gap: 0 var(--space-m);
+}
+
+.column > * + * {
+  margin-top: var(--space-s);
+}
+
+.article h2 {
+  padding-bottom: 0.4rem;
+  border-bottom: 1.5px solid var(--ink-soft);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.article p {
+  margin: var(--space-xs) 0 0;
+  padding-bottom: var(--space-s);
+  border-bottom: 1.5px solid var(--ink-soft);
+}
+
+.article--last p,
+.article--plain p {
+  border-bottom: 0;
+}
+
+.overview {
+  margin: var(--space-xs) 0 0;
+  padding-bottom: var(--space-s);
+  border-bottom: 1.5px solid var(--ink-soft);
+}
+
+.overview div {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.overview dt {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.overview dd {
+  margin: 0;
+}
+
+.steps {
+  margin: var(--space-xs) 0 0;
+  padding-left: 1.4rem;
+}
+
+/* ---------- 9. Billeder og kortboks ---------- */
+.photo {
+  margin: 0;
+}
+
+.photo img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--ink);
+  filter: grayscale(1) contrast(1.05);
+}
+
+/* Fokuspunkt for høje (portræt) fotos, så det vigtige ikke beskæres væk */
+.photo .focus-top {
+  object-position: center 30%;
+}
+
+.photo .focus-middle {
+  object-position: center 55%;
+}
+
+.photo .focus-bottom {
+  object-position: center 70%;
+}
+
+.photo figcaption {
+  margin-bottom: 0.3rem;
+  font-size: 0.75rem;
+}
+
+.map-box {
+  padding: var(--space-s);
+  border: 2px solid var(--ink);
+}
+
+.map-box h2 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.map-box p {
+  margin: 0.3rem 0 var(--space-xs);
+  font-size: 0.8rem;
+}
+
+.map-box img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid var(--ink);
+}
+
+.map-box a {
+  display: inline-block;
+  margin-top: var(--space-xs);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+/* ---------- 10. "Fortroligt"-linjen øverst (kun på Billetter, som i Figma) ---------- */
+.note-top {
+  margin: var(--space-m) 0 0;
+  padding-top: var(--space-xs);
+  border-top: 3px solid var(--ink);
+}
+
+/* ---------- 11. Footer ---------- */
+.site-footer {
+  padding-bottom: var(--space-l);
+}
+
+.site-footer .rule {
+  margin-bottom: var(--space-xs);
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+/* ---------- 12. Responsivt ---------- */
+
+/* Tablet: menu på én række, artikler i 2 spalter */
+@media (min-width: 40em) {
+  .container {
+    padding-inline: var(--space-l);
+  }
+
+  .main-nav {
+    padding: var(--space-xs);
+  }
+
+  .main-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .main-nav a {
+    padding: 0.45rem 0.9rem;
+    font-size: 1rem;
+  }
+
+  .main-nav li:last-child {
+    margin-left: auto;
+  }
+
+  .columns {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Tredje spalte fylder hele bredden under de to første på tablet */
+  .column:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Desktop: 3 spalter som en avisside, menu centreret */
+@media (min-width: 64em) {
+  .main-nav ul {
+    justify-content: center;
+  }
+
+  .main-nav li:last-child {
+    margin-left: 0;
+  }
+
+  .columns {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .column:nth-child(3) {
+    grid-column: auto;
+  }
+
+}
+
+/* ---------- 13. Intro (bruserscenen) ---------- */
+/* Fire billeder fra bruserscenen toner over i hinanden på ca. 2 sekunder,
+   og så toner introen ud, så forsiden kommer frem. Billederne ligger oven
+   på hinanden, og hvert billede har sin egen forsinkelse (animation-delay). */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: var(--space-m);
+  background: var(--paper) url("../img/papir-baggrund.jpg") center / cover no-repeat;
+}
+
+.intro[hidden] {
+  display: none;
+}
+
+.intro__frame {
+  position: relative;
+  width: min(100%, 40.75rem); /* billederne er 652 px brede */
+  aspect-ratio: 16 / 10;
+  background: var(--ink);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+.intro__frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1);
+  opacity: 0;
+}
+
+.intro--play .intro__frame img {
+  animation: intro-frame 0.6s ease-in-out forwards;
+}
+
+.intro--play .intro__frame img:nth-child(2) {
+  animation-delay: 0.45s;
+}
+
+.intro--play .intro__frame img:nth-child(3) {
+  animation-delay: 0.9s;
+}
+
+/* Det sidste billede bliver stående og sløres let, som i Figma */
+.intro--play .intro__frame img:nth-child(4) {
+  animation: intro-last 0.7s ease-in-out 1.35s forwards;
+}
+
+.intro--done {
+  animation: intro-out 0.4s ease-in forwards;
+}
+
+@keyframes intro-frame {
+  0% { opacity: 0; transform: scale(1.04); }
+  35% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes intro-last {
+  from { opacity: 0; filter: grayscale(1) blur(0); }
+  to { opacity: 1; filter: grayscale(1) blur(3px); }
+}
+
+@keyframes intro-out {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* ---------- 14. Reduceret bevægelse ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .intro {
+    display: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
